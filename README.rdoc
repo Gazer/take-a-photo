@@ -21,7 +21,7 @@ In your layout file you need to include the swfobject.js file :
 
 The last thing to do is to disable forgery protection in the upload method.
 
-== Quick Start
+==Quick Start
 
 The plugin hook 2 helpers into ActiveView to help you to take photos. The first-one is the camera itself.
 
@@ -61,13 +61,11 @@ To read the taked photo in your controller, simply create an instance of TakeAPh
 The TakeAPhoto creates a File object internally pointing to the a temporal file on disk, and forward any method call to that
 file, so, you can treat it like a file.
 
-Events
-======
+==Events
 
 TODO : White about the javascript events emitted by the camera.
 
-Using Paperclip or AttachmentFu
-===============================
+==Using Paperclip or AttachmentFu
 
 If you want to persist your photo using attachment_fu[1] the only thing you have to do is pass an TakeAPhoto instance
 as :uploaded_data, as follow :
@@ -96,8 +94,7 @@ the has_attached_file call.
   end
 
 
-TODO
-====
+==TODO
 
  * Let user specify the size of the Photo
  * Dynamically resize video capturing to save bandwidth
@@ -106,8 +103,8 @@ TODO
  * Support forgery protection
 
 
-References
-==========
+==References
+
 [1] http://github.com/technoweenie/attachment_fu/tree/master
 [2] http://github.com/thoughtbot/paperclip/tree/master
 
