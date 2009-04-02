@@ -1,0 +1,114 @@
+=TakeAPhoto
+
+Take a Photo is a plugin that let you take photos from yours rails application and send it
+back to the server.
+
+The plugin don't do any kind of image storage (beside a temporal file) and you are the
+responsible of save the photo. The TakeAPhoto model is compatible with Paperclip and
+attachment_fu, so you can use that fantastics plugins as an Image Storage in order
+to persist the photo in a database, filesystem or event Amazon S3 services.
+
+==Installing
+
+The install is simple, just run ./script/plugin install , then copy the assets into
+you public directory. A rake task (take_a_photo:install) is provided for this action.
+
+Warning: TakeAPhoto use SWFObject 2.1, if your are using a different version be careful.
+
+In your layout file you need to include the swfobject.js file :
+
+  <%= javascript_include_tag "swfobject" %>
+
+The last thing to do is to disable forgery protection in the upload method.
+
+== Quick Start
+
+The plugin hook 2 helpers into ActiveView to help you to take photos. The first-one is the camera itself.
+
+You can add a camera calling to take_a_photo_camera helper. If the call has no arguments it will try to submit
+the photo data into /upload_photo path. You can customize some parameter, such as the POST path and some
+javascript callback to track the status of the process.
+
+Some examples:
+
+  <%= take_a_photo_camera :upload_photo => upload_photos_path %>
+  
+  <script>
+    function upload_done() {
+      alert('Woho!, nice picture');
+    }
+  </script>
+  <%= take_a_photo_camera :upload_photo => upload_photos_path, :on_complete => 'upload_done' %>
+
+  <script>
+    function update_progess(percent) {
+      // do something great with percent
+    }
+  </script>
+  <%= take_a_photo_camera :upload_photo => upload_photos_path, :on_progress => 'update_progess' %>
+
+In order to take the picture, you need to add a "shoot button" to the camera, to do that use take_a_photo_shoot_button
+or you can do by hand, calling $('take_a_photo').take() form javascript.
+
+If you specify an :id parameter when calling take_a_photo_camera, you need to pass the same id to take_a_photo_shoot_button.
+
+To read the taked photo in your controller, simply create an instance of TakeAPhoto passing the params as argument :
+
+  def controller_action
+    my_photo = TakeAPhoto.new params
+  end
+
+The TakeAPhoto creates a File object internally pointing to the a temporal file on disk, and forward any method call to that
+file, so, you can treat it like a file.
+
+Events
+======
+
+TODO : White about the javascript events emitted by the camera.
+
+Using Paperclip or AttachmentFu
+===============================
+
+If you want to persist your photo using attachment_fu[1] the only thing you have to do is pass an TakeAPhoto instance
+as :uploaded_data, as follow :
+
+  class Image << ActiveRecord::Base
+    has_attachment :max_size => 1.megabyte, :content_type => :image
+  end
+
+  def upload_photo
+    photo = TakeAPhoto.new params
+    # Image need to have a has_attachment defined
+    Image.create :uploaded_data => photo
+  end
+
+The Paperclip[2] integration is similar, but instead of using :uploaded_data you have to use the attribute name defined in
+the has_attached_file call.
+
+  class Image << ActiveRecord::Base
+    has_attached_file :data
+  end
+
+  def upload_photo
+    photo = TakeAPhoto.new params
+    # Image need to have a has_attachment defined
+    Image.create :uploaded_data => photo
+  end
+
+
+TODO
+====
+
+ * Let user specify the size of the Photo
+ * Dynamically resize video capturing to save bandwidth
+ * A faster image serialization from Flash?
+ * Support for Image Magick effects, like Polaroid
+ * Support forgery protection
+
+
+References
+==========
+[1] http://github.com/technoweenie/attachment_fu/tree/master
+[2] http://github.com/thoughtbot/paperclip/tree/master
+
+Copyright (c) 2009 Ricardo Markiewicz <gazer.arg@gmail.com>, released under the MIT license
