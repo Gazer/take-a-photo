@@ -15,22 +15,10 @@ class TakeAPhoto
         # if value is not empty (empty values are the blank pixels)
         if value && value != ""
           # get the hexadecimal string (must be 6 chars length)
-          # so add the missing chars if needed
-          hex = value;
-          while hex.length < 6 do
-            hex = "0#{hex}"
-          end
+          hex = "000000#{value}"[-6,6]
 
-      		hex = hex.scan(/./)
-      		rgb = {
-      			'r' => hex[0] + hex[1],
-      			'g' => hex[2] + hex[3],
-      			'b' => hex[4] + hex[5],
-      		}
-      		r = rgb['r'].to_i(16) * 65535 / 256
-      		g = rgb['g'].to_i(16) * 65535 / 256
-      		b = rgb['b'].to_i(16) * 65535 / 256
-          image.pixel_color x, y, Magick::Pixel.new(r, g, b)
+          rgb = hex.scan(/../).map {|color| color.to_i(16) * 65535 / 255}
+          image.pixel_color x, y, Magick::Pixel.new(rgb[0], rgb[1], rgb[2])
         end
       end
     end
