@@ -21,7 +21,11 @@ class TakeAPhoto
           image.pixel_color x, y, Magick::Pixel.new(rgb[0], rgb[1], rgb[2])
         end
       end
+      params.delete "px#{y}"
     end
+    params.delete :width
+    params.delete :height
+
     file = Tempfile.new('take_a_photo')
     filename = "#{file.path}.jpg"
     file.close
