@@ -55,9 +55,7 @@ If you specify an :id parameter when calling take_a_photo_camera, you need to pa
 In the controller you simple have to look to a :take_a_photo key to see if a photo was uploaded :
 
   def upload
-    if params[:take_a_photo]
-      // Do something with the photo
-    end
+		tmp_image_file = TakeAPhoto.new(request)
   end
 
 The TakeAPhoto class creates a File object internally pointing to the a temporal file on disk, and forward any method call to that
@@ -78,7 +76,7 @@ as :uploaded_data, as follow :
 
   def upload_photo
     # Image need to have a has_attachment defined
-    Image.create :uploaded_data => params[:take_a_photo]
+    Image.create :uploaded_data => TakeAPhoto.new(request)
   end
 
 The Paperclip[2] integration is similar, but instead of using :uploaded_data you have to use the attribute name defined in
@@ -91,7 +89,7 @@ the has_attached_file call.
   def upload_photo
     photo = TakeAPhoto.new params
     # Image need to have a has_attachment defined
-    Image.create :data => params[:take_a_photo]
+    Image.create :data => TakeAPhoto.new(request)
   end
 
 
@@ -99,10 +97,8 @@ the has_attached_file call.
 
  * Let user specify the size of the Photo
  * Dynamically resize video capturing to save bandwidth
- * A faster image serialization from Flash?
  * Support for Image Magick effects, like Polaroid
  * Support forgery protection
-
 
 ==References
 
